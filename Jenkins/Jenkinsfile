@@ -1,0 +1,26 @@
+#!groovy
+
+pipeline {
+    agent {label 'DevTech-LinuxBox'}
+
+    options { timestamps () }
+
+    parameters {
+        booleanParam(description: 'Clear the workspace first', name: 'CleanBuild')
+    }
+
+    stages {
+        stage('Clean [Optional]') {
+            when{ expression { params.CleanBuild == true } }
+            steps {
+                deleteDir()
+            }
+        }
+
+        stage('Setup-dita') {
+            steps {
+                slowaccessCheckout(['//slowaccess/qa/pybus/MAIN/LocalReapFiles/dita-ot-3.5.4.zip'])
+            }
+        }
+    }
+}
